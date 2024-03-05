@@ -1,5 +1,7 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
-import 'package:flutter_insta/home.dart';
+
 import 'package:flutter_insta/responsive/mobile.dart';
 import 'package:flutter_insta/responsive/responsive.dart';
 import 'package:flutter_insta/responsive/web.dart';
@@ -15,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(useMaterial3: true),
+      theme: ThemeData.dark(),
       home: Responsive(
         myMobileScreen: Mobile(),
         myWebScreen: Web(),
