@@ -45,7 +45,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions web = FirebaseOptions(
     apiKey: 'AIzaSyAvhpgvWtxSzQJ-BvzjbpF2USHrVmC_RJI',
-    appId: '1:35690579643:web:22d0a2797fc4f4b1fd0b9e',
+    appId: '1:35690579643:web:93e53eb15132548efd0b9e',
     messagingSenderId: '35690579643',
     projectId: 'insta-app-697f5',
     authDomain: 'insta-app-697f5.firebaseapp.com',
