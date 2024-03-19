@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors, sort_child_properties_last
 
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:firebase_auth/firebase_auth.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_insta/screens/sign_in.dart';
 import 'package:flutter_insta/shared/colors.dart';
 import 'package:flutter_insta/shared/contants.dart';
 import 'package:flutter_insta/shared/snackbar.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'dart:io';
 
@@ -24,7 +26,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   bool isVisable = true;
-  File? imgPath;
+  Uint8List? imgPath;
   String? imgName;
 
   final _formKey = GlobalKey<FormState>();
@@ -42,87 +44,88 @@ class _RegisterState extends State<Register> {
   bool hasLowercase = false;
   bool hasSpecialCharacters = false;
 
-  // uploadImage2Screen(ImageSource source) async {
-  //   final pickedImg = await ImagePicker().pickImage(source: source);
-  //   try {
-  //     if (pickedImg != null) {
-  //       setState(() {
-  //         imgPath = File(pickedImg.path);
-  //         imgName = basename(pickedImg.path);
-  //         int random = Random().nextInt(9999999);
-  //         imgName = "$random$imgName";
-  //         print(imgName);
-  //       });
-  //     } else {
-  //       print("NO img selected");
-  //     }
-  //   } catch (e) {
-  //     print("Error => $e");
-  //   }
+  uploadImage2Screen(ImageSource source) async {
+    final XFile? pickedImg = await ImagePicker().pickImage(source: source);
+    try {
+      if (pickedImg != null) {
+        imgPath = await pickedImg.readAsBytes();
+        setState(() {
+          // imgPath = File(pickedImg.path);
+          imgName = basename(pickedImg.path);
+          int random = Random().nextInt(9999999);
+          imgName = "$random$imgName";
+          print(imgName);
+        });
+      } else {
+        print("NO img selected");
+      }
+    } catch (e) {
+      print("Error => $e");
+    }
 
-  //   if (!mounted) return;
-  //   Navigator.pop(context);
-  // }
+    if (!mounted) return;
+    Navigator.pop(context);
+  }
 
-  // showmodel() {
-  //   return showModalBottomSheet(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return Container(
-  //         padding: EdgeInsets.all(22),
-  //         height: 170,
-  //         child: Column(
-  //           mainAxisAlignment: MainAxisAlignment.center,
-  //           children: [
-  //             GestureDetector(
-  //               onTap: () async {
-  //                 await uploadImage2Screen(ImageSource.camera);
-  //               },
-  //               child: Row(
-  //                 children: [
-  //                   Icon(
-  //                     Icons.camera,
-  //                     size: 30,
-  //                   ),
-  //                   SizedBox(
-  //                     width: 11,
-  //                   ),
-  //                   Text(
-  //                     "From Camera",
-  //                     style: TextStyle(fontSize: 20),
-  //                   )
-  //                 ],
-  //               ),
-  //             ),
-  //             SizedBox(
-  //               height: 22,
-  //             ),
-  //             GestureDetector(
-  //               onTap: () {
-  //                 uploadImage2Screen(ImageSource.gallery);
-  //               },
-  //               child: Row(
-  //                 children: [
-  //                   Icon(
-  //                     Icons.photo_outlined,
-  //                     size: 30,
-  //                   ),
-  //                   SizedBox(
-  //                     width: 11,
-  //                   ),
-  //                   Text(
-  //                     "From Gallery",
-  //                     style: TextStyle(fontSize: 20),
-  //                   )
-  //                 ],
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
+  showmodel() {
+    return showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(22),
+          height: 170,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  await uploadImage2Screen(ImageSource.camera);
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.camera,
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: 11,
+                    ),
+                    Text(
+                      "From Camera",
+                      style: TextStyle(fontSize: 20),
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 22,
+              ),
+              GestureDetector(
+                onTap: () {
+                  uploadImage2Screen(ImageSource.gallery);
+                },
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.photo_outlined,
+                      size: 30,
+                    ),
+                    SizedBox(
+                      width: 11,
+                    ),
+                    Text(
+                      "From Gallery",
+                      style: TextStyle(fontSize: 20),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   // register() async {
   //   setState(() {
@@ -225,13 +228,9 @@ class _RegisterState extends State<Register> {
                                 backgroundImage:
                                     AssetImage("assets/img/avatar.jpeg"),
                               )
-                            : ClipOval(
-                                child: Image.file(
-                                  imgPath!,
-                                  width: 145,
-                                  height: 145,
-                                  fit: BoxFit.cover,
-                                ),
+                            : CircleAvatar(
+                                radius: 71,
+                                backgroundImage: MemoryImage(imgPath!),
                               ),
                         Positioned(
                           left: 99,
@@ -239,7 +238,7 @@ class _RegisterState extends State<Register> {
                           child: IconButton(
                             onPressed: () {
                               // uploadImage2Screen();
-                              // showmodel();
+                              showmodel();
                             },
                             icon: const Icon(Icons.add_a_photo),
                             color: Color.fromARGB(255, 247, 248, 249),
